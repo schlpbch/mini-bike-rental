@@ -11,8 +11,8 @@ class BikeState(str, Enum):
 
 class Bike(BaseModel):
     id: str
-    name: str
-    state: BikeState
+    name: str = None
+    state: BikeState = None
 
 
 class Station(BaseModel):

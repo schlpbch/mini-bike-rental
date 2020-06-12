@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from typing import List
 
@@ -74,16 +75,32 @@ def read_bike(bike_id: str):
 def create_bike(bike_id: str, bike: Bike):
     if not bike_id in bikes:
         bikes[bike_id] = bike
-        return JSONResponse(status_code=201, content=f"bike created")
+        return bike
     else:
-        return JSONResponse(status_code=404, content=f"bikeId '{bike_id}' already exists")
+        return JSONResponse(
+            status_code=404, content=f"bikeId '{bike_id}' already exists"
+        )
 
 
 @app.put("/bikes/{bike_id}", response_model=Bike, tags=["bikes"])
 def update_bike(bike_id: str, bike: Bike):
     if bike_id in bikes:
         bikes[bike_id] = bike
-        return JSONResponse(status_code=201, content=f"bike '{bike_id}' updated")
+        return bike
+    else:
+        return JSONResponse(status_code=404, content=f"bikeId '{bike_id}' not found")
+
+
+@app.patch("/bikes/{bike_id}", response_model=Bike, tags=["bikes"])
+def partial_update_bike(bike_id: str, bike: Bike):
+    if bike_id in bikes:
+        updated_bike = bikes[bike_id]
+        if bike.name is not None:
+            updated_bike.name = bike.name
+        if bike.state is not None:
+            updated_bike.state = bike.state
+        bikes[bike_id] = updated_bike
+        return updated_bike
     else:
         return JSONResponse(status_code=404, content=f"bikeId '{bike_id}' not found")
 
@@ -92,7 +109,9 @@ def update_bike(bike_id: str, bike: Bike):
 def delete_bike(bike_id: str):
     if bike_id in bikes:
         del bikes[bike_id]
-        return JSONResponse(status_code=200, content=f"bike with id '{bike_id}' deleted")
+        return JSONResponse(
+            status_code=200, content=f"bike with id '{bike_id}' deleted"
+        )
     else:
         return JSONResponse(status_code=404, content=f"bikeId '{bike_id}' not found")
 
