@@ -26,7 +26,10 @@ stations[station3.id] = station3
 
 
 # The API
-app = FastAPI()
+app = FastAPI(
+    description="A small API for a small bike rental based in Bern.",
+    title="Mini Bike Rental",
+)
 
 # @app.get("/", description="lorem ipsum")
 def read_root():
@@ -66,23 +69,30 @@ def read_bike(bike_id: str):
     else:
         return JSONResponse(status_code=404, content=f"bikeId '{bike_id}' not found")
 
+
 @app.post("/bikes/{bike_id}", response_model=Bike, tags=["bikes"])
-def create_bike(bike_id: str):
+def create_bike(bike_id: str, bike: Bike):
     if not bike_id in bikes:
-        pass
+        bikes[bike_id] = bike
+        return JSONResponse(status_code=201, content=f"bike created")
+    else:
+        return JSONResponse(status_code=404, content=f"bikeId '{bike_id}' already exists")
+
+
+@app.put("/bikes/{bike_id}", response_model=Bike, tags=["bikes"])
+def update_bike(bike_id: str, bike: Bike):
+    if bike_id in bikes:
+        bikes[bike_id] = bike
+        return JSONResponse(status_code=201, content=f"bike '{bike_id}' updated")
     else:
         return JSONResponse(status_code=404, content=f"bikeId '{bike_id}' not found")
-    
-@app.patch("/bikes/{bike_id}", response_model=Bike, tags=["bikes"])
-def update_bike(bike_id: str):
-    pass
 
 
 @app.delete("/bikes/{bike_id}", tags=["bikes"])
 def delete_bike(bike_id: str):
     if bike_id in bikes:
         del bikes[bike_id]
-        return JSONResponse(status_code=200, content=f"bikeId '{bike_id}' deleted")
+        return JSONResponse(status_code=200, content=f"bike with id '{bike_id}' deleted")
     else:
         return JSONResponse(status_code=404, content=f"bikeId '{bike_id}' not found")
 
