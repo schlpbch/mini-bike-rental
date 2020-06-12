@@ -1,0 +1,285 @@
+openapi: 3.0.2
+info:
+  title: Mini Bike Rental
+  description: A small API for a small bike rental based in Bern.
+  version: 0.1.0
+  contact:
+    name: Mini Bike Rental API Team
+    email: andreas.schlapbach@sbb.ch
+    url: http://sbb.ch
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:8000
+  
+paths:
+  /stations/:
+    get:
+      tags:
+        - stations
+      summary: Read Stations
+      operationId: read_stations_stations__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Read Stations Stations  Get
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+  '/stations/{station_id}':
+    get:
+      tags:
+        - stations
+      summary: Read Station
+      operationId: read_station_stations__station_id__get
+      parameters:
+        - required: true
+          schema:
+            title: Station Id
+            type: string
+          name: station_id
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /bikes/:
+    get:
+      tags:
+        - bikes
+      summary: Read Bikes
+      operationId: read_bikes_bikes__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Read Bikes Bikes  Get
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bike'
+  '/bikes/{bike_id}':
+    get:
+      tags:
+        - bikes
+      summary: Read Bike
+      operationId: read_bike_bikes__bike_id__get
+      parameters:
+        - required: true
+          schema:
+            title: Bike Id
+            type: string
+          name: bike_id
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bike'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+        - bikes
+      summary: Update Bike
+      operationId: update_bike_bikes__bike_id__put
+      parameters:
+        - required: true
+          schema:
+            title: Bike Id
+            type: string
+          name: bike_id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bike'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bike'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+        - bikes
+      summary: Create Bike
+      operationId: create_bike_bikes__bike_id__post
+      parameters:
+        - required: true
+          schema:
+            title: Bike Id
+            type: string
+          name: bike_id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bike'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bike'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+        - bikes
+      summary: Delete Bike
+      operationId: delete_bike_bikes__bike_id__delete
+      parameters:
+        - required: true
+          schema:
+            title: Bike Id
+            type: string
+          name: bike_id
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+        - bikes
+      summary: Partial Update Bike
+      operationId: partial_update_bike_bikes__bike_id__patch
+      parameters:
+        - required: true
+          schema:
+            title: Bike Id
+            type: string
+          name: bike_id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bike'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bike'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    Bike:
+      title: Bike
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        state:
+          title: State
+          enum:
+            - FREE
+            - RESERVED
+            - BROKEN
+          type: string
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    Station:
+      title: Station
+      required:
+        - id
+        - name
+        - bikes
+      type: object
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        bikes:
+          title: Bikes
+          type: array
+          items:
+            $ref: '#/components/schemas/Bike'
+    ValidationError:
+      title: ValidationError
+      required:
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string

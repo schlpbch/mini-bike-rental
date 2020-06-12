@@ -27,6 +27,7 @@ stations[station3.id] = station3
 
 
 # The API
+
 app = FastAPI(
     description="A small API for a small bike rental based in Bern.",
     title="Mini Bike Rental",
@@ -38,7 +39,6 @@ def read_root():
 
 
 ## Stations
-
 
 @app.get("/stations/", response_model=List[Station], tags=["stations"])
 def read_stations():
@@ -56,7 +56,6 @@ def read_station(station_id: str):
 
 
 ## Bikes
-
 
 @app.get("/bikes/", response_model=List[Bike], tags=["bikes"])
 def read_bikes():
