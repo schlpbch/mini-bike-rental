@@ -3,16 +3,6 @@ info:
   title: Mini Bike Rental
   description: A small API for a small bike rental based in Bern.
   version: 0.1.0
-  contact:
-    name: Mini Bike Rental API Team
-    email: andreas.schlapbach@sbb.ch
-    url: http://sbb.ch
-  license:
-    name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
-servers:
-  - url: http://localhost:8000
-
 paths:
   /:
     get:
@@ -144,8 +134,8 @@ paths:
     post:
       tags:
         - bikes
-      summary: Create Bike
-      operationId: create_bike_bikes__bike_id__post
+      summary: Add Bike
+      operationId: add_bike_bikes__bike_id__post
       parameters:
         - required: true
           schema:
@@ -257,15 +247,20 @@ components:
         battery:
           title: Battery
           type: integer
-    HTTPValidationError:
-      title: HTTPValidationError
+    Coordinate:
+      title: Coordinate
+      required:
+        - latitude
+        - longitude
       type: object
       properties:
-        detail:
-          title: Detail
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
+        latitude:
+          title: Latitude
+          type: number
+        longitude:
+          title: Longitude
+          type: number
+
     Station:
       title: Station
       required:
@@ -280,11 +275,24 @@ components:
         name:
           title: Name
           type: string
+        coordinate:
+          $ref: '#/components/schemas/Coordinate'
         bikes:
           title: Bikes
           type: array
           items:
             type: string
+            
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+  
     ValidationError:
       title: ValidationError
       required:
