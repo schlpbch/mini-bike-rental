@@ -1,4 +1,4 @@
-A simple API for presentation at WCS at SBB.
+A simple API for presentation at WCS workshop at SBB.
 
 ------------
 Dependencies
@@ -16,4 +16,4 @@ Run using uvicorn
 
 .. code-block:: bash
 
-    $ uvicorn app:main --reload
+    $ uvicorn main:app --reload
