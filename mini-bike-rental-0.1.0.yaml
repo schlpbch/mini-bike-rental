@@ -12,8 +12,20 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: http://localhost:8000
-  
+
 paths:
+  /:
+    get:
+      tags:
+        - version
+      summary: Get Version
+      operationId: get_version__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
   /stations/:
     get:
       tags:
@@ -226,16 +238,25 @@ components:
         id:
           title: Id
           type: string
-        name:
-          title: Name
+        type:
+          title: Type
+          enum:
+            - Normal Bike
+            - Fast Bike
+          type: string
+        stationed_at:
+          title: Stationed At
           type: string
         state:
           title: State
           enum:
-            - FREE
-            - RESERVED
-            - BROKEN
+            - free
+            - reserved
+            - broken
           type: string
+        battery:
+          title: Battery
+          type: integer
     HTTPValidationError:
       title: HTTPValidationError
       type: object
@@ -263,7 +284,7 @@ components:
           title: Bikes
           type: array
           items:
-            $ref: '#/components/schemas/Bike'
+            type: string
     ValidationError:
       title: ValidationError
       required:

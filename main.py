@@ -4,20 +4,28 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from typing import List
 
-from model import BikeState, Bike, Station
+from model import BikeState, BikeType, Bike, Station
 
 
 # Some Data
 
-bike1 = Bike(id="B1", name="First Bike", state=BikeState.FREE)
-bike2 = Bike(id="B2", name="Second Bike", state=BikeState.BROKEN)
+bike1 = Bike(
+    id="B1", type=BikeType.NORMAL, stationed_at="S1", state=BikeState.FREE, battery=49
+)
+bike2 = Bike(
+    id="B2", type=BikeType.FAST, stationed_at="S2", state=BikeState.FREE, battery=100
+)
+bike3 = Bike(
+    id="B3", type=BikeType.NORMAL, stationed_at="S1", state=BikeState.BROKEN, battery=0
+)
 
 bikes = {}
 bikes[bike1.id] = bike1
 bikes[bike2.id] = bike2
+bikes[bike3.id] = bike3
 
-station1 = Station(id="S1", name="Bern, Bahnhof", bikes=list(bikes.values()))
-station2 = Station(id="S2", name="Bern, Wyleregg", bikes=[])
+station1 = Station(id="S1", name="Bern, Bahnhof", bikes=["B1", "B3"])
+station2 = Station(id="S2", name="Bern, Wyleregg", bikes=["B2"])
 station3 = Station(id="S3", name="Bern, Wankdorf", bikes=[])
 
 stations = {}
@@ -33,12 +41,14 @@ app = FastAPI(
     title="Mini Bike Rental",
 )
 
-# @app.get("/", description="lorem ipsum")
-def read_root():
-    return {"Hello": "World"}
+
+@app.get("/", tags=["version"])
+def get_version():
+    return {"Mini Bike Rental": "v. 0.1.0"}
 
 
 ## Stations
+
 
 @app.get("/stations/", response_model=List[Station], tags=["stations"])
 def read_stations():
@@ -56,6 +66,7 @@ def read_station(station_id: str):
 
 
 ## Bikes
+
 
 @app.get("/bikes/", response_model=List[Bike], tags=["bikes"])
 def read_bikes():
@@ -94,10 +105,12 @@ def update_bike(bike_id: str, bike: Bike):
 def partial_update_bike(bike_id: str, bike: Bike):
     if bike_id in bikes:
         updated_bike = bikes[bike_id]
-        if bike.name is not None:
-            updated_bike.name = bike.name
+        if bike.stationed_at is not None:
+            updated_bike.stationed_at = bike.stationed_at
         if bike.state is not None:
             updated_bike.state = bike.state
+        if bike.battery is not None:
+            updated_bike.battery = bike.battery
         bikes[bike_id] = updated_bike
         return updated_bike
     else:
@@ -107,6 +120,8 @@ def partial_update_bike(bike_id: str, bike: Bike):
 @app.delete("/bikes/{bike_id}", tags=["bikes"])
 def delete_bike(bike_id: str):
     if bike_id in bikes:
+        station_id = bikes[bike_id].stationed_at
+        stations[station_id].bikes.remove(bike_id)
         del bikes[bike_id]
         return JSONResponse(
             status_code=200, content=f"bike with id '{bike_id}' deleted"

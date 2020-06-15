@@ -4,18 +4,25 @@ from pydantic import BaseModel
 
 
 class BikeState(str, Enum):
-    FREE = "FREE"
-    RESERVED = "RESERVED"
-    BROKEN = "BROKEN"
+    FREE = "free"
+    RESERVED = "reserved"
+    BROKEN = "broken"
+
+
+class BikeType(str, Enum):
+    NORMAL = "Normal Bike"
+    FAST = "Fast Bike"
 
 
 class Bike(BaseModel):
     id: str
-    name: str = None
+    type: BikeType = None
+    stationed_at: str = None
     state: BikeState = None
+    battery: int = None
 
 
 class Station(BaseModel):
     id: str
     name: str
-    bikes: List[Bike]
+    bikes: List[str]
