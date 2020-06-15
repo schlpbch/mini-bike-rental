@@ -1,4 +1,7 @@
-A simple API for presentation at WCS workshop at SBB.
+A simple API for presentation at WCS workshop at SBB. The creaded YAML file is under the openapi_ folder
+
+The implmentation use the _FastApi: https://fastapi.tiangolo.com/ framework which is fast&fun to work with.
+
 
 ------------
 Dependencies
