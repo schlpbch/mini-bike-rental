@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from typing import List
@@ -7,7 +8,7 @@ from typing import List
 from model import BikeState, BikeType, Bike, Station
 
 
-# Some Data
+# Data for our small world.
 
 bike1 = Bike(
     id="B1", type=BikeType.NORMAL, stationed_at="S1", state=BikeState.FREE, battery=49
@@ -82,7 +83,7 @@ def read_bike(bike_id: str):
 
 
 @app.post("/bikes/{bike_id}", response_model=Bike, tags=["bikes"])
-def create_bike(bike_id: str, bike: Bike):
+def add_bike(bike_id: str, bike: Bike):
     if not bike_id in bikes:
         bikes[bike_id] = bike
         return bike

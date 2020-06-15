@@ -22,7 +22,13 @@ class Bike(BaseModel):
     battery: int = None
 
 
+class Coordinate(BaseModel):
+    latitude: float
+    longitude: float
+
+
 class Station(BaseModel):
     id: str
     name: str
+    coordinate: Coordinate = None
     bikes: List[str]
